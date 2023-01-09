@@ -20,18 +20,26 @@ class item(models.Model):
 
 class cases(models.Model):
     id_case = models.CharField(max_length=16)
+
     icon = models.ImageField(upload_to ='case/images/')
     name = models.CharField(max_length=200)
     price = models.IntegerField(default=0)
-    old_price = models.IntegerField(default=0)
-    show_old_price = models.BooleanField(default=False)
-    items = models.JSONField(default='[{}]')
     amount_items = models.IntegerField(default=0)
     status = models.IntegerField(choices=STATUS, default=1)
+    old_price = models.IntegerField(default=0)
+    show_old_price = models.BooleanField(default=False)
+
+    items = models.JSONField(default=[])
+
+    money = models.IntegerField(default=0)
+    loss = models.IntegerField(default=0)
+    history = models.JSONField(default=[])
+
+
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
-    term = models.BooleanField(default=False)
-    Time_term = models.DateField(null=True, blank=True)
+
+
     def __str__(self):
         return self.name
 
@@ -41,9 +49,11 @@ class HistoryCase(models.Model):
 
 class Users(models.Model):
     token = models.CharField(max_length=32)
+    tradeLink = models.TextField(null=True)
     name = models.CharField(max_length=200)
     img = models.CharField(max_length=500)
     money = models.FloatField(default=0)
+    replenishment = models.FloatField(default=0)
     inventory = models.TextField()
 
     def __str__(self):

@@ -92,14 +92,15 @@ class AddItems(APIView):
         for item in items:
             print(items[item])
             item_=items[item]
-            list.append({'price':item_['price'], 'name':item_['ru_name'],'id':item, 'hash':item_['market_hash_name']})
+            if '(Well-Worn)' in item_['market_hash_name']:
+                list.append({'price':item_['price'], 'name':item_['ru_name'],'id':item, 'hash':item_['market_hash_name']})
         return Response(json.dumps(list))
     def post(self, request):
         data = self.request.data.get('data')
         print(data)
         for item_ in json.loads(data):
             create_item = item(
-                name=item_['name'],
+                name=item_['name'].split('(')[0],
                 price=item_['price'],
                 id_item=item_['id'],
                 hash_name=item_['hash']

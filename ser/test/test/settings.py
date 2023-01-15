@@ -25,6 +25,9 @@ SECRET_KEY = 'django-insecure-a9c@@&ckoien!c1#$kq4-%fx5218(!m&nt(pvx_^_7b((jw7p9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+url_server = '192.168.1.68:8000'
+
+
 CORS_ALLOW_HEADERS = "*"
 ALLOWED_HOSTS = ['*']
 
@@ -44,8 +47,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'channels',
+
     'chat',
     'admin_panel',
+    'case',
+    'upgrade',
+    'contract',
 ]
 
 MIDDLEWARE = [

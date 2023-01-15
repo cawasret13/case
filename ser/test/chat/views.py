@@ -165,3 +165,9 @@ class  Contract(APIView):
                     _item_db.price = 1000
                     _item_db.save()
         return Response('k')
+
+class Guard(APIView):
+    def post(self, request, format=None):
+        token =self.request.data.get('token')
+        user = Users.objects.get(token=token)
+        return Response(user.admin)

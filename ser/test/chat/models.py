@@ -35,6 +35,11 @@ class cases(models.Model):
     loss = models.IntegerField(default=0)
     history = models.JSONField(default=[])
 
+    testing_history = models.JSONField(default=[])
+    coef_profit = models.FloatField(default=0)
+    coef_compensation = models.FloatField(default=0)
+    applayRules = models.BooleanField(default=False)
+    rules = models.JSONField(default=[])
 
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, blank=True, null=True)
@@ -53,6 +58,7 @@ class Users(models.Model):
     name = models.CharField(max_length=200)
     img = models.CharField(max_length=500)
     money = models.FloatField(default=0)
+    admin = models.BooleanField(default=False)
     replenishment = models.FloatField(default=0)
     inventory = models.TextField()
 

@@ -1,5 +1,4 @@
 import ast
-import asyncio
 import json
 import random
 from urllib import parse
@@ -14,9 +13,9 @@ from djangochannelsrestframework.observer import model_observer
 
 from chat.script import Case_script
 
-url_server = '192.168.1.68:8000'
+from test.settings import url_server
 api_key_tm = 'a6Eg5gF0ge38F9Pvc70YpPN091Yu3M7'
-
+db_items = item
 class consumersTest(GenericAsyncAPIConsumer):
 
     async def connect(self):
@@ -72,99 +71,6 @@ class consumersTest(GenericAsyncAPIConsumer):
     async def SendMoneyFun(self):
         await self.send_json({'action':'money'})
 
-
-class Case(GenericAsyncAPIConsumer):
-
-    async def connect(self):
-        await self.accept()
-
-    @action()
-    async def join_case(self, pk, **kwargs):
-        await self.send_json(json.dumps(await self.get_case(pk)))
-
-    @action()
-    async def open_case(self, pk, **kwargs):
-        num = 0
-        for i in range(1000):
-            num+=1
-            items = await self.op_case(pk[0], pk[1], pk[2], num)
-            if items != 'err':
-                await self.send_json(json.dumps(items))
-                await self.add_inventory(items['items'][39]['id'], pk[1])
-                await self.create_history(items['items'][39])
-            else:
-                await self.send_json(json.dumps({'err':'100'}))
-
-    @database_sync_to_async
-    def op_case(self, case, token, mode, num):
-        case = cases.objects.get(id_case=case)
-        __items = case.items
-        user = Users.objects.get(token=token)
-        if user.money >= case.price:
-            history = case.history
-            case.money += case.price
-            user.money -= case.price
-            items_case = []
-            items = []
-            for item_ in  __items:
-                for a in item_:
-                    item = item_[a]
-                    items_case.append(
-                        {'name': item['name'], 'img': item['img'], 'id': item['id'],
-                         'price': item['price'], 'coef':float(item['coef'])})
-            items_case = sorted(items_case, key=lambda student: student['coef'])[::-1]
-            for item in range(66):
-                coef = random.random()
-                for item_ in items_case:
-                   if coef < item_['coef']:
-                       items.append(item_)
-            user.save()
-            items[39]=Case_script(token , case.id_case, num)
-            case.loss += int(items[39]['price'])
-
-            history.append({'date':json.dumps((datetime.now().date()), indent=4, sort_keys=True, default=str), 'id_item':items[39]['id'], 'id_user':token, 'price':items[39]['price']})
-            case.history = history
-            case.save()
-            res = False
-            if case.price <= items[39]['price']:
-                res = True
-            return ({'items': items, 'result': res, 'mode':mode})
-        else:
-            return 'err'
-
-    @database_sync_to_async
-    def get_case(self, id):
-        case = cases.objects.get(id_case=id)
-        items_case = case.items
-        items = []
-        for item in items_case:
-            for a in item:
-                info_item = item[a]
-                items.append({'name': info_item['name'], 'img': info_item['img'], 'id':item, 'price':info_item['price']})
-        return {'name': case.name, 'img': (f'http://{url_server}/media/' + case.icon.name), 'price': case.price,
-                'items': json.dumps(items)}
-
-
-    @database_sync_to_async
-    def create_history(self, data):
-        history = HistoryCase(
-            name=data['name'],
-            img=data['img']
-        )
-        history.save()
-
-
-    @database_sync_to_async
-    def add_inventory(self, item, token):
-        user = Users.objects.get(token=token)
-        inv = []
-        inventory = user.inventory
-        for ite in ast.literal_eval(inventory):
-            inv.append(ite)
-        inv.append(item)
-        user.inventory = inv
-        user.save()
-
 class UserWeb(GenericAsyncAPIConsumer):
 
     async def connect(self):
@@ -189,7 +95,7 @@ class UserWeb(GenericAsyncAPIConsumer):
         inventory = ast.literal_eval(user.inventory)
         list = []
         for item_inv in inventory:
-            itema = item.objects.get(id_item=item_inv)
+            itema = db_items.objects.get(id_item=item_inv)
             list.append({'name':itema.name, 'price':itema.price, 'id':itema.id_item, 'img': (f'http://{url_server}/media/' + itema.icon.name)})
         return list
 
@@ -199,7 +105,7 @@ class UserWeb(GenericAsyncAPIConsumer):
         inventory = ast.literal_eval(user.inventory)
         for itemq in inventory:
             if itemq == id_item:
-                itemdb = item.objects.get(id_item=id_item)
+                itemdb = db_items.objects.get(id_item=id_item)
                 user.money+=float(itemdb.price)
                 inventory.remove(id_item)
                 break
@@ -216,7 +122,7 @@ class UserWeb(GenericAsyncAPIConsumer):
                 break
         user.inventory = inventory
         # user.save()
-        items__ = item.objects.get(id_item=id_item)
+        items__ = db_items.objects.get(id_item=id_item)
         hash_name = items__.hash_name
         price = int((float(items__.price)+(float(items__.price)*2))*1000)
         all_instances = parse.urlparse(user.tradeLink)

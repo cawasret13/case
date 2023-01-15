@@ -1,17 +1,15 @@
 import random
-import time
 from datetime import datetime
-from asgiref.sync import sync_to_async
 from chat.models import Users, cases
 import json
 import codecs
 
-def Case_script(token, id_case , num):
+from test.settings import url_server
+def Case_script(token, id_case):
     with open('static/settings.json') as file:
         settings = json.load(file)[0]
     f = codecs.open('static/log.txt', 'a', "utf-8")
     gr = codecs.open('static/grath.txt', 'a', "utf-8")
-    f.write(f'\n--------{num}\n')
     # user = Users.objects.get(token=token)
     case = cases.objects.get(id_case=id_case)
     items_in_case = []
@@ -87,3 +85,7 @@ def Case_script(token, id_case , num):
                 f.close()
                 break
         return win_item
+
+
+def Upgrade_script(id_user, id_to_item, id_from_item):
+    print('hello')

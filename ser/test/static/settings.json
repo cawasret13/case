@@ -1,9 +1,7 @@
 [{
-  "money": 0,
-  "export_money": 0,
-  "profit": 5,
-  "minMoney": 1000,
-  "export": true,
+  "profit": 10,
+  "bonus": 1000,
+  "division": 2,
   "backspin": [
 
   ]

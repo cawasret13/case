@@ -17,12 +17,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from chat.views import AuthUser, Upgrade, Contract
+from chat.views import AuthUser, Upgrade, Contract, Guard
 from admin_panel.views import Case, GetCase, GetItems, AddItems
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/auth', AuthUser.as_view()),
+    path('api/v1/auth/status', Guard.as_view()),
     path('api/v1/admin/case/list', Case.as_view()),
     path('api/v1/admin/case/update', GetCase.as_view()),
     path('api/v1/admin/items/list', GetItems.as_view()),

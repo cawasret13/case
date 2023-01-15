@@ -70,7 +70,15 @@ class consumersTest(GenericAsyncAPIConsumer):
     @action()
     async def SendMoneyFun(self):
         await self.send_json({'action':'money'})
+    @action()
+    async def addMoney(self, pk, **kwargs):
+        await self.add(pk)
 
+    @database_sync_to_async
+    def add(self, token):
+        user = Users.objects.get(token=token)
+        user.money += 1000
+        user.save()
 class UserWeb(GenericAsyncAPIConsumer):
 
     async def connect(self):
